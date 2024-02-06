@@ -30,11 +30,12 @@ static const SPIConfig hs_spicfg = {
 /*
  * Low speed SPI configuration (328.125kHz, CPHA=0, CPOL=0, MSb first).
  */
+
 static const SPIConfig ls_spicfg = {
   NULL,
   GPIOB,
   12,
-  SPI_CR1_BR_2 | SPI_CR1_BR_1
+  SPI_BaudRatePrescaler_256
 };
 
 /*
@@ -54,7 +55,7 @@ static THD_FUNCTION(spi_thread_1, p) {
   while (true) {
     spiAcquireBus(&SPID2);              /* Acquire ownership of the bus.    */
     palSetPad(GPIOD, GPIOD_LED5);       /* LED ON.                          */
-    spiStart(&SPID2, &hs_spicfg);       /* Setup transfer parameters.       */
+    spiStart(&SPID2, &ls_spicfg);       /* Setup transfer parameters.       */
     spiSelect(&SPID2);                  /* Slave Select assertion.          */
     spiExchange(&SPID2, 512,
                 txbuf, rxbuf);          /* Atomic transfer operations.      */

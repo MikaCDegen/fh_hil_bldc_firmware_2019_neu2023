@@ -173,11 +173,16 @@ int main(void) {
   /* Starts an ADC continuous conversion and its watchdog virtual timer.*/
   chVTSet(&adcvt, MS2ST(10), tmo, (void *)"ADC timeout");
   adcStartConversion(&ADCD1, &adcgrpcfg2, samples2, ADC_GRP2_BUF_DEPTH);
-
+  static const SPIConfig ls_spicfg2 = {
+    NULL,
+    GPIOB,
+    12,
+    SPI_BaudRatePrescaler_256
+  };
   /* Activating SPI drivers.*/
-  spiStart(&SPID1, &hs_spicfg);
-  spiStart(&SPID2, &hs_spicfg);
-  spiStart(&SPID3, &hs_spicfg);
+  spiStart(&SPID1, &ls_spicfg2);
+  spiStart(&SPID2, &ls_spicfg2);
+  spiStart(&SPID3, &ls_spicfg2);
 
   /* Starting SPI threads instances.*/
   chThdCreateStatic(waSPI1, sizeof(waSPI1), NORMALPRIO + 1, spi_thread, &SPID1);
